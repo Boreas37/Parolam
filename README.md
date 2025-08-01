@@ -2,7 +2,7 @@
 
 Bu proje, e-posta ve şifre sızıntılarını kontrol etmek için geliştirilmiş bir web uygulamasıdır.
 
-## 🚀 Docker ile kurulum:
+## Docker ile kurulum:
 
 ### 1. Projeyi İndirin
 ```bash
@@ -148,7 +148,7 @@ python db_import.py --input veri
 docker-compose exec clickhouse clickhouse-client --query "BACKUP TABLE parolam.* TO '/backup'"
 ```
 
-## 📊 Environment Variables Açıklaması
+##  Environment Variables Açıklaması
 
 ### ClickHouse Ayarları
 - `CH_HOST`: ClickHouse sunucu adresi (Docker'da: `clickhouse`)
@@ -167,7 +167,7 @@ docker-compose exec clickhouse clickhouse-client --query "BACKUP TABLE parolam.*
 - `DEFAULT_BREACH_DATE`: Varsayılan sızıntı tarihi
 - `BATCH_SIZE`: Toplu işlem boyutu (varsayılan: `100000`)
 
-## 📁 Proje Yapısı
+##  Proje Yapısı
 
 ```
 parolam/
