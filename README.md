@@ -146,7 +146,7 @@ python db_import.py --input veri
 docker-compose exec clickhouse clickhouse-client --query "BACKUP TABLE parolam.* TO '/backup'"
 ```
 
-##  Environment Variables Açıklaması
+## Ortam Değişkenlerinin Açıklamaları
 
 ### ClickHouse Ayarları
 - `CH_HOST`: ClickHouse sunucu adresi (Docker'da: `clickhouse`)
