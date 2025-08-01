@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+
+{% block title %}API Dokümantasyonu{% endblock %}
+
+{% block content %}
+    <header>
+        <h1>Parolam API</h1>
+        <p class="subtitle">Geliştirici dokümantasyonu ve API kullanım kılavuzu</p>
+    </header>
+    
+    <div class="api-overview">
+        <h2>API Özellikleri</h2>
+        <div class="overview-content">
+            <div class="feature-card">
+                <div class="feature-icon">🔍</div>
+                <div class="feature-title">E-posta Kontrolü</div>
+                <div class="feature-desc">Belirli bir e-posta adresinin sızıntılarda olup olmadığını kontrol eder.</div>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🛡️</div>
+                <div class="feature-title">Parola Kontrolü</div>
+                <div class="feature-desc">K-Anonymity yöntemiyle güvenli parola kontrolü sağlar.</div>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">⚡</div>
+                <div class="feature-title">Hızlı Yanıt</div>
+                <div class="feature-desc">JSON formatında hızlı ve güvenilir API yanıtları.</div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="endpoint-section">
+        <h2>E-posta Kontrolü</h2>
+        <p>Belirli bir e-posta adresinin sızıntılarda olup olmadığını kontrol eder.</p>
+        
+        <h3>Endpoint Bilgileri</h3>
+        <ul>
+            <li><strong>URL:</strong> <code>/check-email</code></li>
+            <li><strong>Metod:</strong> <code>POST</code></li>
+            <li><strong>Content-Type:</strong> <code>application/json</code></li>
+            <li><strong>Body:</strong> <code>{ "email": "kullanici@mail.com" }</code></li>
+        </ul>
+        
+        <h3>Örnek İstek (curl)</h3>
+        <pre><code>curl -X POST -H "Content-Type: application/json" -d '{"email": "test@example.com"}' http://127.0.0.1:5000/check-email</code></pre>
+
+        <h3>Başarılı Yanıt (Sızdırılmış)</h3>
+        <pre><code>{
+  "pwned": true,
+  "breaches": [
+    { "name": "OrnekSizinti 2025", "date": "26-07-2025" }
+  ]
+}</code></pre>
+        
+        <h3>Başarılı Yanıt (Güvende)</h3>
+        <pre><code>{
+  "pwned": false
+}</code></pre>
+    </div>
+    
+    <div class="endpoint-section">
+        <h2>Parola Kontrolü (K-Anonymity)</h2>
+        <p>
+            Bir parolanın SHA-1 hash'inin ilk 6 hanesini alır ve bu ön ekle başlayan tüm hash'lerin son eklerini ve görülme sayılarını döndürür. Yanıt formatı <code>SUFFIX:COUNT</code> şeklindedir ve her kayıt yeni satırla ayrılır.
+        </p>
+        
+        <h3>Endpoint Bilgileri</h3>
+        <ul>
+            <li><strong>URL:</strong> <code>/check-password/&lt;prefix&gt;</code></li>
+            <li><strong>Metod:</strong> <code>GET</code></li>
+            <li><strong>URL Parametresi:</strong> <code>prefix</code> - Parola SHA-1 hash'inin 6 haneli büyük harf ön eki.</li>
+        </ul>
+        
+        <h3>Örnek İstek (curl)</h3>
+        <p>Örneğin, hash'in ilk 6 hanesi <code>A94A8F</code> ise:</p>
+        <pre><code>curl http://127.0.0.1:5000/check-password/A94A8F</code></pre>
+        
+        <h3>Örnek Yanıt</h3>
+        <pre><code>65E5E1461621262F8359A6A44B24BCB6818:5
+8D8637482D2485575239E3F050C3793446C:121
+... (diğer hash'ler)</code></pre>
+        
+        <h3>Kullanım Notları</h3>
+        <ul>
+            <li>Parolanız asla sunucuya gönderilmez</li>
+            <li>SHA-1 hash'inin sadece ilk 6 hanesi gönderilir</li>
+            <li>Kontrol işlemi tarayıcınızda yapılır</li>
+            <li>Maksimum güvenlik ve gizlilik sağlanır</li>
+        </ul>
+    </div>
+    
+    <footer>
+        <p>Bu, Parolam'ın bir demo sürümüdür. Son derece sınırlı bir veritabanı kullanılır.</p>
+    </footer>
+{% endblock %}

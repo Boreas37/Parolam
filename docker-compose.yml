@@ -1,0 +1,45 @@
+version: '3.8'
+
+services:
+  clickhouse:
+    image: clickhouse/clickhouse-server:latest
+    container_name: parolam_clickhouse
+    ports:
+      - "8123:8123"
+      - "9000:9000"
+    environment:
+      - CLICKHOUSE_DB=parolam
+      - CLICKHOUSE_USER=default
+      - CLICKHOUSE_PASSWORD=your_clickhouse_password
+      - CLICKHOUSE_DEFAULT_ACCESS_MANAGEMENT=1
+    volumes:
+      - clickhouse_data:/var/lib/clickhouse
+    networks:
+      - parolam_network
+
+  web:
+    build: ./web
+    container_name: parolam_web
+    ports:
+      - "80:80"
+    environment:
+      - CH_HOST=clickhouse
+      - CH_PORT=8123
+      - CH_USER=default
+      - CH_PASSWORD=your_clickhouse_password
+      - CH_DATABASE=parolam
+      - FLASK_HOST=0.0.0.0
+      - FLASK_PORT=80
+      - FLASK_DEBUG=False
+    depends_on:
+      - clickhouse
+    networks:
+      - parolam_network
+    restart: unless-stopped
+
+volumes:
+  clickhouse_data:
+
+networks:
+  parolam_network:
+    driver: bridge 

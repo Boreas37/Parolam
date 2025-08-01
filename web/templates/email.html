@@ -1,0 +1,185 @@
+{% extends "base.html" %}
+
+{% block title %}E-posta Kontrolü{% endblock %}
+
+{% block content %}
+    <header>
+        <h1>Parolam</h1>
+        <p class="subtitle">E-posta adresinizin veri sızıntılarında yer alıp almadığını kontrol edin</p>
+    </header>
+    
+    <div class="search-container">
+        <div class="search-box">
+            <input type="email" id="email-input" placeholder="E-posta adresinizi girin...">
+            <button id="search-btn">E-posta Kontrol Et</button>
+        </div>
+        <p class="info-text">E-posta adresiniz gizli tutulur. Bu bir demo arayüzdür.</p>
+    </div>
+    
+    <div class="stats-container">
+        <div class="stat-card">
+            <div class="stat-value" id="email-count">Yükleniyor...</div>
+            <div class="stat-label">Sızıntıya Uğrayan Hesap</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value" id="breach-count">Yükleniyor...</div>
+            <div class="stat-label">Veri Sızıntısı</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value" id="password-count">Yükleniyor...</div>
+            <div class="stat-label">Parola Hash'i</div>
+        </div>
+    </div>
+    
+    <div class="results-container" id="results-container">
+        <div class="result-header">
+            <div class="status-icon pwned" id="status-icon">!</div>
+            <div>
+                <h2 id="result-title">E-posta Sızıntıya Uğramış</h2>
+                <p id="result-subtitle">Bu e-posta veri sızıntılarında bulundu</p>
+            </div>
+        </div>
+        
+        <div id="breach-list">
+            <!-- Sızıntı öğeleri buraya eklenecek -->
+        </div>
+    </div>
+    
+    <footer>
+        <p>Bu, Parolam'ın bir demo sürümüdür. Son derece sınırlı bir veritabanı kullanılır.</p>
+    </footer>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const emailInput = document.getElementById('email-input');
+    const searchBtn = document.getElementById('search-btn');
+    const resultsContainer = document.getElementById('results-container');
+    const resultTitle = document.getElementById('result-title');
+    const resultSubtitle = document.getElementById('result-subtitle');
+    const statusIcon = document.getElementById('status-icon');
+    const breachList = document.getElementById('breach-list');
+    
+    // İstatistikleri yükle
+    function loadStats() {
+        fetch('/api/stats')
+            .then(res => res.json())
+            .then(data => {
+                if (data.error) {
+                    console.error('İstatistik yükleme hatası:', data.error);
+                    return;
+                }
+                
+                // Sayıları formatla
+                const formatNumber = (num) => {
+                    if (num >= 1000000) {
+                        return (num / 1000000).toFixed(1) + 'M';
+                    } else if (num >= 1000) {
+                        return (num / 1000).toFixed(1) + 'K';
+                    }
+                    return num.toString();
+                };
+                
+                document.getElementById('email-count').textContent = formatNumber(data.email_count);
+                document.getElementById('breach-count').textContent = formatNumber(data.breach_count);
+                document.getElementById('password-count').textContent = formatNumber(data.password_count);
+            })
+            .catch(err => {
+                console.error('İstatistik yükleme hatası:', err);
+            });
+    }
+    
+    // Sayfa yüklendiğinde istatistikleri yükle
+    loadStats();
+
+    // E-posta doğrulama fonksiyonu
+    function isValidEmail(email) {
+        const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+        return emailRegex.test(email);
+    }
+
+    searchBtn.addEventListener('click', function() {
+        const email = emailInput.value.trim();
+        
+        // Boş kontrol
+        if (!email) {
+            alert('Lütfen bir e-posta adresi girin');
+            emailInput.focus();
+            return;
+        }
+        
+        // E-posta format kontrolü
+        if (!isValidEmail(email)) {
+            alert('Lütfen geçerli bir e-posta adresi girin (örn: ornek@domain.com)');
+            emailInput.focus();
+            return;
+        }
+        
+        searchBtn.textContent = 'Kontrol Ediliyor...';
+        searchBtn.disabled = true;
+        
+        fetch('/check-email', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email })
+        })
+        .then(res => res.json())
+        .then(data => {
+            searchBtn.textContent = 'E-posta Kontrol Et';
+            searchBtn.disabled = false;
+            resultsContainer.style.display = 'block';
+            resultsContainer.scrollIntoView({ behavior: 'smooth' });
+            
+            if (data.error) {
+                resultTitle.textContent = 'Hata';
+                resultSubtitle.textContent = data.error;
+                statusIcon.textContent = '!';
+                statusIcon.className = 'status-icon pwned';
+                breachList.innerHTML = '';
+                return;
+            }
+            
+            if (data.pwned && data.breaches && data.breaches.length > 0) {
+                statusIcon.textContent = '!';
+                statusIcon.className = 'status-icon pwned';
+                resultTitle.textContent = `${email} sızıntıya uğramış`;
+                resultSubtitle.textContent = `Bu e-posta ${data.breaches.length} veri sızıntısında görülmüş`;
+                
+                const breachHtml = data.breaches.map(breach => `
+                    <div class="breach-item">
+                        <div class="breach-title">
+                            <span class="breach-name">${breach.name}</span>
+                            <span class="breach-date">${breach.date}</span>
+                        </div>
+                    </div>
+                `).join('');
+                
+                breachList.innerHTML = breachHtml;
+            } else {
+                statusIcon.textContent = '✓';
+                statusIcon.className = 'status-icon safe';
+                resultTitle.textContent = `${email} güvende`;
+                resultSubtitle.textContent = 'Bu e-posta adresi bilinen sızıntılarda bulunamadı';
+                breachList.innerHTML = '<p>Bu e-posta adresi için sızıntıya uğramış hesap bulunamadı.</p>';
+            }
+        })
+        .catch(err => {
+            searchBtn.textContent = 'E-posta Kontrol Et';
+            searchBtn.disabled = false;
+            resultTitle.textContent = 'Hata';
+            resultSubtitle.textContent = 'Kontrol sırasında bir hata oluştu.';
+            statusIcon.textContent = '!';
+            statusIcon.className = 'status-icon pwned';
+            breachList.innerHTML = '';
+        });
+    });
+    
+    emailInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            searchBtn.click();
+        }
+    });
+});
+</script>
+{% endblock %}
