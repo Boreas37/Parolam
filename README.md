@@ -184,8 +184,6 @@ parolam/
 
 ## Yapılacaklar
 
-### Öncelikli Özellikler
-
 #### 1. **Gelişmiş API Sistemi**
 - [ ] API endpoint'leri oluşturma
 - [ ] API rate limiting ve authentication
