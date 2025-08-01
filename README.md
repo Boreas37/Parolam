@@ -1,6 +1,6 @@
 # Parolam Project
 
-Bu proje, e-posta ve şifre sızıntılarını kontrol etmek için geliştirilmiş bir web uygulamasıdır.
+Bu proje, Have I Been Pwned (HIBP) hizmetine benzer şekilde çalışmak üzere tasarlanmış, on-premise olarak kullanılabilen bir veri ihlali sorgulama sistemidir. Arka planda yüksek performanslı sorgulama için ClickHouse veritabanı kullanılmaktadır.
 
 ## Docker ile kurulum:
 
