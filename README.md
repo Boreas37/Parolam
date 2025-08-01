@@ -139,7 +139,7 @@ docker-compose exec web bash
 # Veritabanı tablolarını oluştur
 python db_create.py
 
-# Veri içe aktar
+# Veriyi import et
 python db_import.py --input veri
 
 # Backup al
@@ -160,7 +160,7 @@ docker-compose exec clickhouse clickhouse-client --query "BACKUP TABLE parolam.*
 - `FLASK_PORT`: Flask uygulamasının port'u (varsayılan: `80`)
 - `FLASK_DEBUG`: Debug modu (production'da `False`)
 
-### İçe Aktarma Ayarları
+### İmport Ayarları
 - `DEFAULT_BREACH_NAME`: Varsayılan sızıntı adı
 - `DEFAULT_BREACH_DATE`: Varsayılan sızıntı tarihi
 - `BATCH_SIZE`: Toplu işlem boyutu (varsayılan: `100000`)
