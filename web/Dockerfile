@@ -22,5 +22,4 @@ COPY ../veri/ /app/veri/
 
 EXPOSE 80
 
-
 CMD ["python", "app.py"]
