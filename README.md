@@ -42,21 +42,19 @@ BATCH_SIZE=100000
 ### 3. Docker Compose ile Çalıştırın
 ```bash
 # Sistemi başlatın
-docker-compose up -d
+docker compose up -d
 
 # Sistemi durdurun
-docker-compose down
+docker compose down
 ```
 
 ### 4. Veritabanı Kurulumu
 ```bash
-# Veritabanı tablolarını oluşturun
 python db_create.py
 ```
 
 ### 5. Veri İçe Aktarma
 ```bash
-# Verileri içe aktarın
 python db_import.py --input veri(Opsiyonel; --batch number, .env dosyasında default 100000 tanımlı.)
 ```
 
