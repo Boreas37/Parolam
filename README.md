@@ -194,8 +194,5 @@ parolam/
 - [ ] Kayıt formlarına otomatik entegrasyon
 - [ ] Şifre gücü göstergesi
 
-#### 3. **Monitoring ve Analytics**
-- [ ] Application performance monitoring
-- [ ] Health check endpoint'leri
 
 
