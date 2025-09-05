@@ -83,7 +83,7 @@ sudo apt-get install clickhouse-server clickhouse-client
 brew install clickhouse
 
 # Windows
-# https://clickhouse.com/docs/en/install#install-from-deb-packages
+https://clickhouse.com/docs/en/install#install-from-deb-packages
 ```
 
 ### 4. Veritabanı Kurulumu
